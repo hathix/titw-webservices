@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Services;
 using System.Data.SqlClient;
 using System.Data;
+using SecuGen.FDxSDKPro.Windows;
 
 namespace SEISWS
 {
@@ -2177,6 +2178,129 @@ namespace SEISWS
         #endregion 
 
     }
+
+    // funcionalidad de huellas digitales
+
+    // agregar informacion de huella para un paciente reconocido por codigo
+    [WebMethod]
+    public int AgregarHuella(string CodigoPaciente, string Huella)
+    {
+        SqlConnection cn = con.conexion();
+        SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
+                CodigoPaciente + "', '" + Huella + "')", cn);
+        SqlTransaction trx;
+        int intretorno;
+
+        try{
+            cn.Open();
+            trx = cn.BeginTransaction();
+            cmd.Transaction = trx;
+            intretorno = cmd.ExecuteNonQuery();
+            trx.Commit();
+            cn.Close();
+            return intretorno;
+        }
+        catch (SqlException sqlException)
+        {
+            cn.Close();
+            return -1;
+        }
+        catch (Exception exception)
+        {
+            cn.Close();
+            return -1;
+        }
+    }
+
+    // checa si la informacion de un paciente ya ha sido insertada
+    [WebMethod]
+    public int PacienteTieneHuella (string CodigoPaciente)
+    {
+        SqlConnection cn = con.conexion();
+        cn.Open();
+        string existe = 0;
+        string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
+                CodigoPaciente + "'";
+
+        SqlCommand cmd = new SqlCommand(sql, cn);
+        SqlDataReader reader = cmd.ExecuteReader();
+
+        if (reader.HasRows)
+        {
+            existe = 1;
+        }
+        cn.Close();
+        return existe;
+    }
+
+    // procesa todas las huellas salvadas para ver si un coincide con 
+    // una huella de prueba.
+    [WebMethod]
+    public string BuscarHuella(string Huella)
+    {
+        byte[] huellaTemplate;
+        SGFingerPrintManager m_FPM;
+
+        try{
+            // process the given fingerprint into the correct template
+            huellaTemplate = Convert.FromBase64String(Huella);
+        }
+        catch (Exception e)
+        {
+            return "fingerprintNotConverted";
+        }
+
+        try{
+            // load in the fingerprint tools
+            m_FPM = new SGFingerPrintManager();
+        }
+        catch (Exceptione e)
+        {
+            return "fingerprintManagerNotFound";
+        }
+
+        try{
+            // prep the data retrieval of fingerprints
+            SqlConnection cn = con.conexion();
+            cn.Open();
+            string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
+            SqlCommand cmd = new SqlCommand(sql, cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            string fingerprintStr;
+            byte[] fingerprintTemplate;
+            bool matched = false;
+            Int32 err;
+            
+
+            while (reader.Read())
+            {
+                fingerprintStr = reader.getString(1);
+                fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+
+                SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.Normal;
+                err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
+
+                if (matched)
+                {
+                    cn.Close();
+                    return reader.getString(0);
+                    // return CodigoPaciente for hits
+                }
+
+            }
+            cn.Close();
+            return "fingerprintNotFound";
+
+        }
+        catch (Exception e)
+        {
+            return "sqlConnectionOrMatchingFailed";
+        }
+
+    }
+
+
 
 
     
