@@ -2230,7 +2230,7 @@ namespace SEISWS
                 {
                     cn.Close()
                     return reader.getString(0);
-                    // return CodigoPaciente for hit
+                    // return CodigoPaciente for hits
                 }
 
             }
