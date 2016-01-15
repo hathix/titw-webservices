@@ -2132,6 +2132,64 @@ namespace SEISWS
 
     }
 
+    // funcionalidad de huellas digitales
+
+    [WebMethod]
+    public int InsertarHuella(string CodigoPaciente, string Huella)
+    {
+        SqlConnection cn = con.conexion();
+        SqlCommand cmd = new SqlCommand("INSERT INTO Huellas ('" +
+                CodigoPaciente + "', '" + Huella + "')", cn);
+        SqlTransaction trx;
+        int intretorno;
+
+        try{
+            cn.Open();
+            cmd.Transaction = trx;
+            intretorno = cmd.ExecuteNonQuery();
+            trx.Commit();
+            cn.Close();
+            return intretorno;
+        }
+        catch (SqlException sqlException)
+        {
+            cn.Close();
+            return -1;
+        }
+        catch (Exception exception)
+        {
+            cn.Close();
+            return -1;
+        }
+    }
+
+    [WebMethod]
+    public int PacienteTieneHuella (string CodigoPaciente)
+    {
+        SqlConnection cn = con.conexion();
+        string existe = 0;
+        string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
+                CodigoPaciente + "'";
+
+        SqlCommand cmd = new SqlCommand(sql, cn);
+        SqlDataReader reader = cmd.ExecuteReader();
+
+        if (reader.HasRows)
+        {
+            existe = 1;
+        }
+        cn.Close();
+        return existe;
+    }
+
+    [WebMethod]
+    public string[] BuscarHuella(string Huella)
+    {
+        
+    }
+
+
+
 
     
 }
