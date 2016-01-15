@@ -2143,6 +2143,7 @@ namespace SEISWS
         SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
                 CodigoPaciente + "', '" + Huella + "')", cn);
         SqlTransaction trx;
+        trx = cn.BeginTransaction)();
         int intretorno;
 
         try{
