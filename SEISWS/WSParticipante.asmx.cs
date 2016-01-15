@@ -2136,7 +2136,7 @@ namespace SEISWS
     // funcionalidad de huellas digitales
 
     [WebMethod]
-    public int InsertarHuella(string CodigoPaciente, string Huella)
+    public int AgregarHuella(string CodigoPaciente, string Huella)
     {
         SqlConnection cn = con.conexion();
         SqlCommand cmd = new SqlCommand("INSERT INTO Huellas ('" +
@@ -2195,8 +2195,6 @@ namespace SEISWS
             SGFingerPrintManager m_FPM;
             m_FPM = new SGFingerPrintManager();
 
-
-
             // prep the data retrieval of fingerprints
             SqlConnection cn = con.conexion();
             string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
@@ -2210,21 +2208,29 @@ namespace SEISWS
             
 
             while (reader.Read())
+            {
+                fingerprintStr = reader.getString(1);
+                fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+
+                err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, 80, ref matched);
+
+                if (matched)
                 {
-                    fingerprintStr = reader.getString(1);
-                    fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
-
-                    err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, 80, ref matched);
-                    
-                    if (matched)
-                    {
-                        return reader.getString(0);
-                        // return CodigoPaciente for hit
-                    }
-
+                    cn.Close()
+                    return reader.getString(0);
+                    // return CodigoPaciente for hit
                 }
 
             }
+            cn.Close()
+            return "fingerprintNotFound";
+
+        }
+        catch (Exception e)
+        {
+            return "endpointFailing";
+        }
+
     }
 
 
