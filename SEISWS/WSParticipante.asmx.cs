@@ -2232,7 +2232,8 @@ namespace SEISWS
                 fingerprintStr = reader.getString(1);
                 fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
 
-                err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, 80, ref matched);
+                SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.Normal;
+                err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
 
                 if (matched)
                 {
