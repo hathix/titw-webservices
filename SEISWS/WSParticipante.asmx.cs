@@ -2135,11 +2135,12 @@ namespace SEISWS
 
     // funcionalidad de huellas digitales
 
+    // agregar informacion de huella para un paciente reconocido por codigo
     [WebMethod]
     public int AgregarHuella(string CodigoPaciente, string Huella)
     {
         SqlConnection cn = con.conexion();
-        SqlCommand cmd = new SqlCommand("INSERT INTO Huellas ('" +
+        SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
                 CodigoPaciente + "', '" + Huella + "')", cn);
         SqlTransaction trx;
         int intretorno;
@@ -2164,6 +2165,7 @@ namespace SEISWS
         }
     }
 
+    // checa si la informacion de un paciente ya ha sido insertada
     [WebMethod]
     public int PacienteTieneHuella (string CodigoPaciente)
     {
@@ -2183,6 +2185,8 @@ namespace SEISWS
         return existe;
     }
 
+    // procesa todas las huellas salvadas para ver si un coincide con 
+    // una huella de prueba.
     [WebMethod]
     public string BuscarHuella(string Huella)
     {
