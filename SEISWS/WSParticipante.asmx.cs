@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Services;
 using System.Data.SqlClient;
 using System.Data;
+using SecuGen.FDxSDKPro.Windows;
 
 namespace SEISWS
 {
@@ -2132,6 +2133,8 @@ namespace SEISWS
 
     }
 
+    // buascar un paciente por su codigopaciente
+
     // funcionalidad de huellas digitales
 
     [WebMethod]
@@ -2183,9 +2186,37 @@ namespace SEISWS
     }
 
     [WebMethod]
-    public string[] BuscarHuella(string Huella)
+    public string BuscarHuella(string Huella)
     {
         
+        try{
+            // process the given fingerprint into the correct template
+            byte[] huellaTemplate = Convert.FromBase64String(Huella);
+
+            // load in the fingerprint tools
+
+
+            // prep the data retrieval of fingerprints
+            SqlConnection cn = con.conexion();
+            string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
+            SqlCommand cmd = new SqlCommand(sql, cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            string fingerprintStr;
+            byte[] fingerprintTemplate;
+            bool matched = false;
+            int err;
+            
+
+            while (reader.Read())
+                {
+                    fingerprintStr = reader.getString(1);
+                    fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+
+                    err = SGFPM_MatchTemplate()
+                }
+
+            }
     }
 
 
