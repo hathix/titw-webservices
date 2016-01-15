@@ -2171,6 +2171,7 @@ namespace SEISWS
     public int PacienteTieneHuella (string CodigoPaciente)
     {
         SqlConnection cn = con.conexion();
+        cn.Open()
         string existe = 0;
         string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
                 CodigoPaciente + "'";
@@ -2215,6 +2216,7 @@ namespace SEISWS
         try{
             // prep the data retrieval of fingerprints
             SqlConnection cn = con.conexion();
+            cn.Open();
             string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
             SqlCommand cmd = new SqlCommand(sql, cn);
             SqlDataReader reader = cmd.ExecuteReader();
