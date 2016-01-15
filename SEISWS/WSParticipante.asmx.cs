@@ -2143,7 +2143,7 @@ namespace SEISWS
         SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
                 CodigoPaciente + "', '" + Huella + "')", cn);
         SqlTransaction trx;
-        trx = cn.BeginTransaction)();
+        trx = cn.BeginTransaction();
         int intretorno;
 
         try{
@@ -2191,10 +2191,12 @@ namespace SEISWS
     [WebMethod]
     public string BuscarHuella(string Huella)
     {
-        
+        byte[] huellaTemplate;
+        SGFingerPrintManager m_FPM;
+
         try{
             // process the given fingerprint into the correct template
-            byte[] huellaTemplate = Convert.FromBase64String(Huella);
+            huellaTemplate = Convert.FromBase64String(Huella);
         }
         catch (Exception e)
         {
@@ -2203,7 +2205,6 @@ namespace SEISWS
 
         try{
             // load in the fingerprint tools
-            SGFingerPrintManager m_FPM;
             m_FPM = new SGFingerPrintManager();
         }
         catch (Exceptione e)
@@ -2233,7 +2234,7 @@ namespace SEISWS
 
                 if (matched)
                 {
-                    cn.Close()
+                    cn.Close();
                     return reader.getString(0);
                     // return CodigoPaciente for hits
                 }
