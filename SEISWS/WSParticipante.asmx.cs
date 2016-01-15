@@ -105,40 +105,50 @@ namespace SEISWS
             return lista.ToArray();
         }
 
-        /// fanneyzhu - get patient from codigopaciente
-
         [WebMethod]
         public Participante[] ObtenerPacienteDeCodigoPaciente(string codigopaciente)
         {
-            SqlConnection cn = con.conexion();
 
-            cn.Open();
-            string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
-                    "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) FechaNacimiento," +
-                    "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
+            try {
+                SqlConnection cn = con.conexion();
 
-            SqlCommand cmd = new SqlCommand(sql, cn);
+                cn.Open();
+                string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
+                        "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) AS FechaNacimiento," +
+                        "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
 
-            SqlDataReader reader = cmd.ExecuteReader();
+                SqlCommand cmd = new SqlCommand(sql, cn);
 
-            List<Participante> lista = new List<Participante>();
+                SqlDataReader reader = cmd.ExecuteReader();
 
-            while (reader.Read())
-            {
-                lista.Add(new Participante(
-                    reader.GetString(0), 
-                    reader.GetString(1),
-                    reader.GetString(2),
-                    reader.GetString(3),
-                    reader.GetInt32(4),
-                    reader.GetString(5),
-                    reader.GetString(6),
-                    reader.GetInt32(7)));
+                List<Participante> lista = new List<Participante>();
+
+                while (reader.Read())
+                {
+                    lista.Add(new Participante(
+                        reader.GetString(0), 
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4),
+                        reader.GetString(5),
+                        reader.GetString(6),
+                        reader.GetInt32(7)));
+                }
+
+                cn.Close();
+
+                return lista.ToArray();
             }
 
-            cn.Close();
+            catch (SqlException ex) {
+                return null;
+            }
 
-            return lista.ToArray();
+            catch (Exception ex) {
+                return null;
+            }
+        
         }
 
         [WebMethod]
