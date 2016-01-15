@@ -2254,7 +2254,7 @@ namespace SEISWS
             // load in the fingerprint tools
             m_FPM = new SGFingerPrintManager();
         }
-        catch (Exceptione e)
+        catch (Exception e)
         {
             return "fingerprintManagerNotFound";
         }
@@ -2275,18 +2275,18 @@ namespace SEISWS
 
             while (reader.Read())
             {
-                fingerprintStr = reader.getString(1);
+                fingerprintStr = reader.GetString(1);
                 fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
 
-                SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.Normal;
+                SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
                 err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
 
                 if (matched)
                 {
                     cn.Close();
-                    return reader.getString(0);
+                    return reader.GetString(0);
                     // return CodigoPaciente for hits
-                }
+                }W
 
             }
             cn.Close();
