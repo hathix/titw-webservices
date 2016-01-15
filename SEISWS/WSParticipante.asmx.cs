@@ -2133,8 +2133,6 @@ namespace SEISWS
 
     }
 
-    // buascar un paciente por su codigopaciente
-
     // funcionalidad de huellas digitales
 
     [WebMethod]
@@ -2194,6 +2192,9 @@ namespace SEISWS
             byte[] huellaTemplate = Convert.FromBase64String(Huella);
 
             // load in the fingerprint tools
+            SGFingerPrintManager m_FPM;
+            m_FPM = new SGFingerPrintManager();
+
 
 
             // prep the data retrieval of fingerprints
@@ -2205,7 +2206,7 @@ namespace SEISWS
             string fingerprintStr;
             byte[] fingerprintTemplate;
             bool matched = false;
-            int err;
+            Int32 err;
             
 
             while (reader.Read())
@@ -2213,7 +2214,14 @@ namespace SEISWS
                     fingerprintStr = reader.getString(1);
                     fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
 
-                    err = SGFPM_MatchTemplate()
+                    err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, 80, ref matched);
+                    
+                    if (matched)
+                    {
+                        return reader.getString(0);
+                        // return CodigoPaciente for hit
+                    }
+
                 }
 
             }
