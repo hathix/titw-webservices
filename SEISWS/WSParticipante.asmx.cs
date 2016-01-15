@@ -2243,7 +2243,7 @@ namespace SEISWS
                 }
 
             }
-            cn.Close()
+            cn.Close();
             return "fingerprintNotFound";
 
         }
