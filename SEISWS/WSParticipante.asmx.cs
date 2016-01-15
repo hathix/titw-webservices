@@ -2190,11 +2190,23 @@ namespace SEISWS
         try{
             // process the given fingerprint into the correct template
             byte[] huellaTemplate = Convert.FromBase64String(Huella);
+        }
+        catch (Exception e)
+        {
+            return "fingerprintNotConverted";
+        }
 
+        try{
             // load in the fingerprint tools
             SGFingerPrintManager m_FPM;
             m_FPM = new SGFingerPrintManager();
+        }
+        catch (Exceptione e)
+        {
+            return "fingerprintManagerNotFound";
+        }
 
+        try{
             // prep the data retrieval of fingerprints
             SqlConnection cn = con.conexion();
             string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
@@ -2228,7 +2240,7 @@ namespace SEISWS
         }
         catch (Exception e)
         {
-            return "endpointFailing";
+            return "sqlConnectionOrMatchingFailed";
         }
 
     }
