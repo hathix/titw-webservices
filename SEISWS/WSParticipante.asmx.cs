@@ -2143,11 +2143,11 @@ namespace SEISWS
         SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
                 CodigoPaciente + "', '" + Huella + "')", cn);
         SqlTransaction trx;
-        trx = cn.BeginTransaction();
         int intretorno;
 
         try{
             cn.Open();
+            trx = cn.BeginTransaction();
             cmd.Transaction = trx;
             intretorno = cmd.ExecuteNonQuery();
             trx.Commit();
@@ -2171,7 +2171,7 @@ namespace SEISWS
     public int PacienteTieneHuella (string CodigoPaciente)
     {
         SqlConnection cn = con.conexion();
-        cn.Open()
+        cn.Open();
         string existe = 0;
         string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
                 CodigoPaciente + "'";
