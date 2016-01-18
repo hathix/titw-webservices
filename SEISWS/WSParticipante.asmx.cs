@@ -6,6 +6,7 @@ using System.Web.Services;
 using System.Data.SqlClient;
 using System.Data;
 using SecuGen.FDxSDKPro.Windows;
+using System.Text.RegularExpressions;
 
 namespace SEISWS
 {
@@ -2238,6 +2239,10 @@ namespace SEISWS
     [WebMethod]
     public string BuscarHuella(string Huella)
     {
+        string base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$"
+        Regex r = new Regex(pat, RegexOptions.IgnoreCase);
+        Match m;
+
         byte[] huellaTemplate;
         SGFingerPrintManager m_FPM;
 
@@ -2275,18 +2280,28 @@ namespace SEISWS
 
             while (reader.Read())
             {
-                fingerprintStr = reader.GetString(1);
-                fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+                try{
+                    fingerprintStr = reader.GetString(1);
+                    m = r.Match(text);
+                    if (m.Success)
+                    {
+                        fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
 
-                SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
-                err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
+                        SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
+                        err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
 
-                if (matched)
+                        if (matched)
+                        {
+                            cn.Close();
+                            return reader.GetString(0);
+                            // return CodigoPaciente for hits
+                        }
+                    }
+                }
+                catch (Exception e)
                 {
-                    cn.Close();
-                    return reader.GetString(0);
-                    // return CodigoPaciente for hits
-                }W
+                    // don't do anything, bad data shouldn't mess you up
+                }
 
             }
             cn.Close();
