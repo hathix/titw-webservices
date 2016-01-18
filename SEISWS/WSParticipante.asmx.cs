@@ -517,7 +517,7 @@ namespace SEISWS
             }
 
             cn.Close();
-
+ 
             return lista.ToArray();
         }
         [WebMethod]
@@ -2316,8 +2316,67 @@ namespace SEISWS
     }
 
 
+    /* [WebMethod]
+    public int[] VentanaDeVisitas(string CodigoProyecto, string CodigoGrupoVisita, string CodigoVisita)
+    {
+        SqlConnection cn = con.conexion();
+        cn.Open();
+
+        sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" + 
+                CodigoProyecto + " AND CodigoGrupoVisita=" + CodigoGrupoVisita +
+                " AND CodigoVisita=" + CodigoVisita; 
+
+         SqlCommand cmd = new SqlCommand(sql, cn);
+         SqlDataReader reader = cmd.ExecuteReader();
+
+         if (reader.HasRows) {
+            reader.Read();
+            return [reader.GetInt32(0), reader.GetInt32(1)];
+         }
+         else {
+
+         }
+
+    } */
 
 
-    
+        [WebMethod]
+        public Visita[] ListadoGrupoVisita1(int CodigoProyecto)
+        {
+            SqlConnection cn = con.conexion();
+            cn.Open();
+
+            sql = "SELECT CodigoProyecto, CodigoGrupoVisita, NombreGrupoVisita, CodigoVisita, " + 
+            "DescripcionVisita, GenerarAuto, Dependiente, DiasVisitaProx, DiasAntes, DiasDesputes, " +
+            "OrdenVisita FROM Visita WHERE CodigoProyecto=" + CodigoProyecto;
+
+
+            SqlDataAdapter dap = new SqlDataAdapter(sql, cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            List<Visita> lista = new List<Visita>();
+
+            while (reader.Read())
+            {
+                lista.Add(new Visita(
+                    reader.GetInt32(0),
+                    reader.GetInt32(1),
+                    reader.GetString(2), 
+                    reader.GetInt32(3),
+                    reader.GetString(4),
+                    reader.GetBoolean(5),
+                    reader.GetInt32(6),
+                    reader.GetInt32(7),
+                    reader.GetInt32(8),
+                    reader.GetInt32(9)));
+            }
+
+            cn.Close();
+        }
+         
+
+
+
+
 }
 
