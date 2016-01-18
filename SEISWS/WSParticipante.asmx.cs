@@ -2376,6 +2376,47 @@ namespace SEISWS
          
 
 
+        [WebMethod]
+        public Visitas2[] ListadoVisitas5(string CodigoPaciente, string CodigoUsuario, string CodigoProyecto)
+        {
+            SqlConnection cn = con.conexion();
+            cn.Open();
+            string sql = "SELECT PY.Nombre AS Proyecto, E.Nombre AS Visita, " +
+                 "SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103) AS FechaVisita," +
+                 "CONVERT(varchar(5), V.HoraInicio, 108) AS HoraCita, EC.Descripcion AS EstadoVisita ,CONVERT(varchar(5), V.CodigoProyecto, 103) AS CodigoProyecto," +
+                 "CONVERT(varchar(5), V.CodigoGrupoVisita, 103) AS CodigoGrupoVisita,CONVERT(varchar(5), V.CodigoVisita, 103) AS CodigoVisita, CONVERT(varchar(5), " +
+                 "V.CodigoVisitas, 103) AS CodigoVisitas, FechaUpdEstado " +
+                 "FROM  VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1 " +
+                 "INNER JOIN USUARIOS_PROYECTO AS UP ON UP.CodigoProyecto = V.CodigoProyecto " +
+                 "INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita " +
+                 "INNER JOIN PARAMETROS AS EC ON V.CodigoEstadoVisita = EC.CodigoParametro AND EC.Codigo = 5 " +
+                 "WHERE V.CodigoPaciente = '" + CodigoPaciente + "' AND UP.CodigoUsuario = " + CodigoUsuario + " AND V.CodigoProyecto = " + CodigoProyecto;
+
+            SqlCommand cmd = new SqlCommand(sql, cn);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            List<Visitas2> lista = new List<Visitas2>();
+
+            while (reader.Read())
+            {
+                lista.Add(new Visitas1(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetString(4),
+                    reader.GetString(5),
+                    reader.GetString(6),
+                    reader.GetString(7),
+                    reader.GetString(8)),
+                    reader.GetString(9));
+            }
+
+            cn.Close();
+            return lista.ToArray();
+        }
+
 
 
 }
