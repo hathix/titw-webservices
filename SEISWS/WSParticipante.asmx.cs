@@ -9,7 +9,7 @@ using SecuGen.FDxSDKPro.Windows;
 namespace SEISWS
 {
 
-   
+
 
     /// <summary>
     /// Descripción breve de ServicioClientes
@@ -18,11 +18,11 @@ namespace SEISWS
   //  [WebService(Namespace = "http://70.38.64.52/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-    // Para permitir que se llame a este servicio Web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la línea siguiente. 
+    // Para permitir que se llame a este servicio Web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la línea siguiente.
     // [System.Web.Script.Services.ScriptService]
 
 
-        
+
 
    public class WSParticipante : System.Web.Services.WebService
     {
@@ -62,7 +62,7 @@ namespace SEISWS
 
             SqlDataReader reader = cmd.ExecuteReader();
 
-            if (reader.HasRows)    
+            if (reader.HasRows)
             {
                 existe = "1";
             }
@@ -90,7 +90,7 @@ namespace SEISWS
             while (reader.Read())
             {
                 lista.Add(new Participante(
-                    reader.GetString(0), 
+                    reader.GetString(0),
                     reader.GetString(1),
                     reader.GetString(2),
                     reader.GetString(3),
@@ -111,7 +111,7 @@ namespace SEISWS
             string msje = "";
 
             con.Abrir();
-            
+
             dtDatos = this.RegistrarPacientes(Nombres, ApellidoP, ApellidoM, CodigoTipoDocumento, DocumentoIdentidad, FechaNacimiento, Sexo);
 
             if (dtDatos.Rows.Count > 0)
@@ -182,7 +182,7 @@ namespace SEISWS
 
                 valret = (string)sqlcmd.Parameters["@resul"].Value;
 
-               
+
 
                 sqlcon.Close();
 
@@ -202,8 +202,8 @@ namespace SEISWS
 
 
         [WebMethod]
-        public Distrito[] ListadoDistritos(string codDistrito) { 
-        
+        public Distrito[] ListadoDistritos(string codDistrito) {
+
              SqlConnection sqlcon = con.conexion();
             SqlCommand sqlcmd = new SqlCommand("SPS_UBIGEO_X_PROVINCIA", sqlcon);
             sqlcmd.Connection = sqlcon;
@@ -228,10 +228,10 @@ namespace SEISWS
             sqlcon.Close();
 
             return lista.ToArray();
-            
-        
-        
-        
+
+
+
+
         }
 
 
@@ -264,9 +264,9 @@ namespace SEISWS
             sqlcon.Close();
 
             return lista.ToArray();
-            
-        
-        
+
+
+
         }
 
 
@@ -281,8 +281,8 @@ namespace SEISWS
             sqlcmd.CommandType = CommandType.StoredProcedure;
             sqlcon.Open();
 
-            
-               
+
+
                 sqlcmd.Parameters.AddWithValue("@CodigoPais", 1);
                 SqlDataReader reader = sqlcmd.ExecuteReader();
                 List<Departamento> lista = new List<Departamento>();
@@ -299,12 +299,12 @@ namespace SEISWS
                 sqlcon.Close();
 
                 return lista.ToArray();
-            
 
-        
+
+
         }
-        
-        
+
+
 
 
         [WebMethod]
@@ -414,8 +414,8 @@ namespace SEISWS
             dap.SelectCommand.CommandType = CommandType.StoredProcedure;
             dap.SelectCommand.Parameters.AddWithValue("@Documento", Documento);
             dap.Fill(dt);
-            
-            cn.Close(); 
+
+            cn.Close();
             return dt;
         }
 
@@ -426,9 +426,9 @@ namespace SEISWS
 
             cn.Open();
 
-            string sql = "SELECT p.CodigoProyecto,p.Nombre " + 
+            string sql = "SELECT p.CodigoProyecto,p.Nombre " +
                 "FROM LOCAL_PROYECTO AS lp INNER JOIN " +
-                "PROYECTO AS p ON lp.CodigoProyecto = p.CodigoProyecto " + 
+                "PROYECTO AS p ON lp.CodigoProyecto = p.CodigoProyecto " +
                 "WHERE lp.estado=1 AND CodigoLocal = " +  local;
 
             SqlCommand cmd = new SqlCommand(sql, cn);
@@ -495,7 +495,7 @@ namespace SEISWS
                 lista.Add(new Visita(
                     reader.GetInt32(0),
                     reader.GetInt32(1),
-                    reader.GetString(2), 
+                    reader.GetString(2),
                     reader.GetInt32(3),
                     reader.GetString(4),
                     reader.GetBoolean(5),
@@ -550,14 +550,14 @@ namespace SEISWS
 
         [WebMethod]
         public Visitas[] ListadoVisitas(string CodigoPaciente)
- 
+
         {
             SqlConnection cn = con.conexion();
             cn.Open();
-//            SELECT        PY.Nombre AS Proyecto, E.Nombre AS Visita, SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103) 
+//            SELECT        PY.Nombre AS Proyecto, E.Nombre AS Visita, SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103)
 //                         AS FechaVisita, CONVERT(varchar(5), V.HoraInicio, 108) AS HoraCita, EC.Descripcion AS EstadoVisita
-//            FROM         VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1 
-//                         INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita 
+//            FROM         VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1
+//                         INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita
 //                         INNER JOIN PARAMETROS AS EC ON V.CodigoEstadoVisita = EC.CodigoParametro AND EC.Codigo = 5
 //            WHERE        (V.CodigoPaciente = 'b0875796-a823-455b-a48a-4da85d050fca') AND (V.CodigoLocal = 1) AND (V.CodigoProyecto = 1)
             string sql = "SELECT PY.Nombre AS Proyecto, E.Nombre AS Visita, " +
@@ -591,8 +591,8 @@ namespace SEISWS
         public String ListadoFormatos(String CodigoUsuario, int CodigoLocal, int CodigoProyecto, int CodigoGrupoVisita, int CodigoVisita)
         {
             SqlConnection cn = con.conexion();
-            //WHERE        (F.IdTipoDeFormato = '04') AND (U.CodigoUsuarioSP = '0') AND (PU.CodigoProyecto = 5) AND (U.CodigoLocal = 1) AND (R.CodigoVisita = 1) AND 
-            //             
+            //WHERE        (F.IdTipoDeFormato = '04') AND (U.CodigoUsuarioSP = '0') AND (PU.CodigoProyecto = 5) AND (U.CodigoLocal = 1) AND (R.CodigoVisita = 1) AND
+            //
             cn.Open();
             string sql = "SELECT F.IdFormatoNemotecnico AS FormID " +
                          "FROM SEIS_DATA.dbo.Usuarios AS U INNER JOIN " +
@@ -621,8 +621,8 @@ namespace SEISWS
         public String ListadoFormatos1(String CodigoUsuario, int CodigoLocal, int CodigoProyecto)
         {
             SqlConnection cn = con.conexion();
-            //WHERE        (F.IdTipoDeFormato = '04') AND (U.CodigoUsuarioSP = '0') AND (PU.CodigoProyecto = 5) AND (U.CodigoLocal = 1) 
-            //             
+            //WHERE        (F.IdTipoDeFormato = '04') AND (U.CodigoUsuarioSP = '0') AND (PU.CodigoProyecto = 5) AND (U.CodigoLocal = 1)
+            //
             cn.Open();
             string sql = "SELECT F.IdFormatoNemotecnico AS FormID " +
                          "FROM SEIS_DATA.dbo.Usuarios AS U INNER JOIN " +
@@ -677,7 +677,7 @@ namespace SEISWS
                     reader.GetString(3),
                     reader.GetString(4),
                     reader.GetString(5),
-                    reader.GetString(6), 
+                    reader.GetString(6),
                     reader.GetString(7),
                     reader.GetString(8)));
             }
@@ -846,16 +846,16 @@ namespace SEISWS
             finally {
 
                 sqlcon.Close();
-            
+
             }
 
 
             return val;
-        
+
         }
 
         [WebMethod]
-        public int EstadoVisita(int CodigoLocal, int CodigoProyecto, int CodigoVisita, int CodigoVisitas, 
+        public int EstadoVisita(int CodigoLocal, int CodigoProyecto, int CodigoVisita, int CodigoVisitas,
             string CodigoPaciente, int CodigoEstadoVisita, int CodigoEstatusPaciente,int CodigoUsuario)
         {
             SqlConnection cn = con.conexion();
@@ -907,8 +907,8 @@ namespace SEISWS
                  "CASE WHEN ct.Numero IS NULL THEN '' ELSE ct.Numero END AS IdTAM, " +
                  "CASE WHEN ce.Numero IS NULL THEN '' ELSE ce.Numero END AS IdENR " +
                  "FROM dbo.USUARIOS_PROYECTO U " +
-                 "INNER JOIN PROYECTO AS PY ON U.CodigoProyecto = PY.CodigoProyecto AND U.Estado=1 " + 
-                 "INNER JOIN PACIENTE_LOCAL_PROYECTO PP ON PY.CodigoProyecto = PP.CodigoProyecto " + 
+                 "INNER JOIN PROYECTO AS PY ON U.CodigoProyecto = PY.CodigoProyecto AND U.Estado=1 " +
+                 "INNER JOIN PACIENTE_LOCAL_PROYECTO PP ON PY.CodigoProyecto = PP.CodigoProyecto " +
                  "LEFT JOIN PACIENTE_COD_TAM ct on ct.CodigoTAM=PP.CodigoTAM AND ct.CodigoLocal=PP.CodigoLocal AND ct.CodigoProyecto=PP.CodigoProyecto " +
                  "LEFT JOIN PACIENTE_COD_ENR ce on ce.CodigoENR=PP.CodigoENR AND ce.CodigoLocal=PP.CodigoLocal AND ce.CodigoProyecto=PP.CodigoProyecto " +
                  "WHERE PP.CodigoPaciente = '" + CodigoPaciente + "' AND U.CodigoUsuario = " + CodigoUsuario;
@@ -1080,7 +1080,7 @@ namespace SEISWS
         [WebMethod]
         public int InsertarGeoPoint(
             string Latitud,
-            string Longitud, 
+            string Longitud,
             string Fecha,
             string Hora,
             int CodigoUsuario,
@@ -1226,7 +1226,7 @@ namespace SEISWS
         #region SEISLab Movil
 
         [WebMethod]
-        
+
         public CabeceraSA ObtenerCabeceraSA(string IdMuestra) {
 
             CabeceraSA cab = new CabeceraSA();
@@ -1259,7 +1259,7 @@ namespace SEISWS
 
             finally { sqlcon.Close(); }
             return cab;
-    
+
         }
 
           [WebMethod]
@@ -1268,8 +1268,8 @@ namespace SEISWS
 
             string result = "";
             string Validado, Registrado, Liberado, Pendiente;
-        
-        
+
+
             SqlConnection sqlcon = con.conexion();
             DataTable dt = new DataTable();
                SqlCommand sqlcmd = new SqlCommand();
@@ -1308,7 +1308,7 @@ namespace SEISWS
                 }
                 else if (Validado == "Si" && Liberado == "Si") {
                     result = "Liberado";
-                
+
                 }
 
 
@@ -1317,7 +1317,7 @@ namespace SEISWS
             catch (Exception ex) {
 
                 result = ex.Message;
-            
+
             }
 
             return result;
@@ -1325,11 +1325,11 @@ namespace SEISWS
 
           }
 
-       
 
-          public string ValidarEstadoExamen( string estado,DataTable dt) { 
-          
-                
+
+          public string ValidarEstadoExamen( string estado,DataTable dt) {
+
+
               string result ="No";
 
 
@@ -1349,7 +1349,7 @@ namespace SEISWS
                   }
 
 
-              
+
               }
 
               else if (estado == "Pendiente") {
@@ -1367,17 +1367,17 @@ namespace SEISWS
                       else if (dt.Rows[i]["FlagR"].ToString() == "N") {
 
                           result = "Si";
-                      
-                      
+
+
                       }
 
 
 
 
                   }
-                  
-              
-              
+
+
+
               }
 
               else if (estado == "Validado")
@@ -1397,7 +1397,7 @@ namespace SEISWS
                       {
 
                           result = "Si";
-                         
+
 
                       }
 
@@ -1459,9 +1459,9 @@ namespace SEISWS
                   for (int i = 0; i < dt.Rows.Count; i++)
                   {
                       string codExa = dt.Rows[i]["CodigoExamen"].ToString();
-                      
+
                       string examenNom = dt.Rows[i]["Nombre"].ToString();
-                      
+
 
                       ExamenSA Exa = new ExamenSA(codExa, examenNom);
                       lisExam.Add(Exa);
@@ -1501,8 +1501,8 @@ namespace SEISWS
                   sqlcmd.CommandText = "SPI_SA_EXA_VISIT_PACIENTE";
                   sqlcmd.CommandType = CommandType.StoredProcedure;
                   sqlcmd.Parameters.AddWithValue("@CodigoSA",CodSA);
-                  sqlcmd.Parameters.AddWithValue("@CodigoLocal",CodLocal);  
-                  sqlcmd.Parameters.AddWithValue("@CodigoProyecto",CodProyec);  
+                  sqlcmd.Parameters.AddWithValue("@CodigoLocal",CodLocal);
+                  sqlcmd.Parameters.AddWithValue("@CodigoProyecto",CodProyec);
                   sqlcmd.Parameters.AddWithValue("@CodigoGrupoVisita",CodGrupoVis);
                   sqlcmd.Parameters.AddWithValue("@CodigoVisita",CodVisita);
                   sqlcmd.Parameters.AddWithValue("@CodigoEmpresa",CodEmp);
@@ -1516,11 +1516,11 @@ namespace SEISWS
                   if (sqlcmd.ExecuteNonQuery()==1) {
 
                       result = "OK";
-                  
+
                   }
 
               }
-                
+
             catch(SqlException sqlEx){
 
 
@@ -1531,7 +1531,7 @@ namespace SEISWS
               catch (Exception ex)
               {
 
-                  result = ex.Message;	 
+                  result = ex.Message;
 
 
               }
@@ -1580,26 +1580,26 @@ namespace SEISWS
 
                       result = this.InsertarNuevosExamenes(CodSA, CodArea, CodExa, CodUser, codlocal, codProyecto, codGrupoVisita, codVisita, codEmpresa, codMuestra, codigoVisitas, codPaciente);
                   }
-                
+
               }
               catch (Exception ex) {
 
                   result = ex.Message;
-              
+
               }
 
               return result;
 
-          
+
           }
-        
+
 
 
 
         [WebMethod]
-        
-        public ExamenSA[] ListaExamenesSA( string IdMuestra) { 
-        
+
+        public ExamenSA[] ListaExamenesSA( string IdMuestra) {
+
             List<ExamenSA> lisExam = new List<ExamenSA>();
           SqlConnection sqlcon = con.conexion();
             DataTable dt = new DataTable();
@@ -1630,7 +1630,7 @@ namespace SEISWS
                     lisExam.Add(Exa);
                 }
 
-           
+
 
             }
 
@@ -1643,13 +1643,13 @@ namespace SEISWS
             finally { sqlcon.Close(); }
 
             return lisExam.ToArray();
-        
+
         }
 
 
         [WebMethod]
-        public OpcionAnalito[] ListaOpcionAnalito(string codAnalito) { 
-        
+        public OpcionAnalito[] ListaOpcionAnalito(string codAnalito) {
+
         List<OpcionAnalito> opAnalitos=  new List<OpcionAnalito>();
         SqlConnection sqlcon = con.conexion();
         DataTable dt = new DataTable();
@@ -1662,7 +1662,7 @@ namespace SEISWS
             sqlcmd.CommandText = "SPS_BUSQUEDA_SA_MOVIL";
             sqlcmd.CommandType = CommandType.StoredProcedure;
             sqlcmd.Parameters.AddWithValue("@codigoAnalito", codAnalito);
-       
+
             sqlcmd.Parameters.AddWithValue("@accion", '3');
             SqlDataAdapter dataAdap = new SqlDataAdapter(sqlcmd);
             dataAdap.Fill(dt);
@@ -1672,7 +1672,7 @@ namespace SEISWS
 
                 string codOp = dt.Rows[i]["CodigoOpcionResultado"].ToString();
                 string descripcion = dt.Rows[i]["Glosa"].ToString();
-               
+
                 OpcionAnalito op = new OpcionAnalito(codOp,descripcion);
                 opAnalitos.Add(op);
 
@@ -1699,7 +1699,7 @@ namespace SEISWS
 
             string result = "";
             SqlConnection sqlcon = con.conexion();
-           
+
             SqlCommand sqlcmd = new SqlCommand();
             sqlcmd.Connection = sqlcon;
             sqlcmd.CommandText = "SPI_SA_RESULTADOS_MOVIL";
@@ -1740,11 +1740,11 @@ namespace SEISWS
             }
 
             return result;
-        
+
         }
 
 
-       
+
 
         [WebMethod]
         public Area[] ListarArea() {
@@ -1760,7 +1760,7 @@ namespace SEISWS
                 sqlcon.Open();
                 sqlcmd.CommandText = "SPS_BUSQUEDA_SA_MOVIL";
                 sqlcmd.CommandType = CommandType.StoredProcedure;
-               
+
                 sqlcmd.Parameters.AddWithValue("@accion", '4');
                 SqlDataAdapter dataAdap = new SqlDataAdapter(sqlcmd);
                 dataAdap.Fill(dt);
@@ -1796,7 +1796,7 @@ namespace SEISWS
 
 
             return areas.ToArray();
-        
+
         }
 
 
@@ -1804,7 +1804,7 @@ namespace SEISWS
         public Analito[] ListarAnalitos(string CodigoExa, string CodSA)
         {
             List<Analito> analitos = new List<Analito>();
-            
+
             SqlConnection sqlcon = con.conexion();
             DataTable dt = new DataTable();
             SqlCommand sqlcmd = new SqlCommand();
@@ -1836,7 +1836,7 @@ namespace SEISWS
                     else if (tipo == "2" || tipo == "1") {
 
                         resultado = dt.Rows[i]["Resultado"].ToString();
-                    
+
                     }
 
 
@@ -1849,14 +1849,14 @@ namespace SEISWS
             catch (Exception ex){
 
                 string msj = ex.Message;
-            
+
             }
 
             finally{sqlcon.Close();}
 
             return analitos.ToArray();
-        
-        
+
+
         }
 
         [WebMethod]
@@ -1924,7 +1924,7 @@ namespace SEISWS
                 sqlcmd.CommandText = "SPS_GRUPO_VISITA_X_PROYECTO";
                 sqlcmd.CommandType = CommandType.StoredProcedure;
                 sqlcmd.Parameters.AddWithValue("@CodigoProyecto", Convert.ToInt32(codProyec));
-               
+
                 SqlDataAdapter dataAdap = new SqlDataAdapter(sqlcmd);
                 dataAdap.Fill(dt);
 
@@ -1939,7 +1939,7 @@ namespace SEISWS
                     grupovisitas.Add(grup);
 
 
-                
+
 
                 }
             }
@@ -1954,8 +1954,8 @@ namespace SEISWS
             finally { sqlcon.Close(); }
 
             return grupovisitas.ToArray();
-        
-        
+
+
         }
 
 
@@ -1983,7 +1983,7 @@ namespace SEISWS
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    
+
                     string codMuestra = dt.Rows[i]["CodigoTipoMuestra"].ToString();
                     string descripcion = dt.Rows[i]["Nombre"].ToString();
                     string check = "false";
@@ -1992,7 +1992,7 @@ namespace SEISWS
 
                     listMuestras.Add(muestra);
 
-               
+
 
 
 
@@ -2011,7 +2011,7 @@ namespace SEISWS
             return listMuestras.ToArray();
 
 
-        
+
         }
 
 
@@ -2025,7 +2025,7 @@ namespace SEISWS
             DataTable dt = new DataTable();
             SqlCommand sqlcmd = new SqlCommand();
             sqlcmd.Connection = sqlcon;
-            
+
 
 
 
@@ -2053,8 +2053,8 @@ namespace SEISWS
 
                 ListMateriales.Add(matrial);
 
-                }   
-             
+                }
+
 
             }
 
@@ -2069,8 +2069,8 @@ namespace SEISWS
 
             return ListMateriales.ToArray();
 
-        
-        
+
+
         }
 
 
@@ -2125,7 +2125,7 @@ namespace SEISWS
             finally { sqlcon.Close(); }
 
             return result;
-        
+
         }
 
 
@@ -2182,16 +2182,16 @@ namespace SEISWS
             return existe;
         }
 
-        // procesa todas las huellas salvadas para ver si un coincide con 
+        // procesa todas las huellas salvadas para ver si un coincide con
         // una huella de prueba.
         [WebMethod]
         public string BuscarHuella(string Huella)
         {
                byte[] huellaTemplate;
-            
+
             SGFingerPrintManager m_FPM;
             Int32 err;
-            
+
 
             try
             {
@@ -2232,7 +2232,7 @@ namespace SEISWS
                 byte[] fingerprintTemplate;
                 bool matched = false;
                 bool error_triggered = false;
-               
+
 
 
                 while (reader.Read())
@@ -2246,7 +2246,7 @@ namespace SEISWS
                         if (err == (Int32)SGFPMError.ERROR_NONE){
                             if (matched)
                             {
-                                
+
                                 string  usuario =  reader.GetString(0);
                                 // return CodigoPaciente for hits
                                 cn.Close();
@@ -2269,7 +2269,7 @@ namespace SEISWS
                 else{
                     return "fingerprintNotFound";
                 }
-                
+
 
             }
             catch (Exception e)
@@ -2277,7 +2277,7 @@ namespace SEISWS
                 return e.Message; ;
             }
 
-           
+
 
         }
 
@@ -2288,9 +2288,9 @@ namespace SEISWS
        SqlConnection cn = con.conexion();
        cn.Open();
 
-       sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" + 
+       sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" +
                CodigoProyecto + " AND CodigoGrupoVisita=" + CodigoGrupoVisita +
-               " AND CodigoVisita=" + CodigoVisita; 
+               " AND CodigoVisita=" + CodigoVisita;
 
         SqlCommand cmd = new SqlCommand(sql, cn);
         SqlDataReader reader = cmd.ExecuteReader();
@@ -2319,7 +2319,6 @@ namespace SEISWS
             "OrdenVisita FROM Visita WHERE CodigoProyecto=" + CodigoProyecto;
             SqlCommand cmd = new SqlCommand(sql, cn);
 
-            SqlDataAdapter dap = new SqlDataAdapter(sql, cn);
             SqlDataReader reader = cmd.ExecuteReader();
 
             List<Visita> lista = new List<Visita>();
@@ -2337,7 +2336,7 @@ namespace SEISWS
                     reader.GetInt32(6),
                     reader.GetInt32(7),
                     reader.GetInt32(8),
-                     reader.GetInt32(9)));
+                    reader.GetInt32(9)));
             }
 
             cn.Close();
@@ -2435,13 +2434,58 @@ namespace SEISWS
             return lista.ToArray();
         }
 
-        #endregion 
+        [WebMethod]
+        public Participante[] ObtenerPacienteDeCodigoPaciente(string codigopaciente)
+        {
+
+            try {
+                SqlConnection cn = con.conexion();
+
+                cn.Open();
+                string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
+                        "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) AS FechaNacimiento," +
+                        "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
+
+                SqlCommand cmd = new SqlCommand(sql, cn);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Participante> lista = new List<Participante>();
+
+                while (reader.Read())
+                {
+                    lista.Add(new Participante(
+                        reader.GetString(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4),
+                        reader.GetString(5),
+                        reader.GetString(6),
+                        reader.GetInt32(7)));
+                }
+
+                cn.Close();
+
+                return lista.ToArray();
+            }
+
+            catch (SqlException ex) {
+                return null;
+            }
+
+            catch (Exception ex) {
+                return null;
+            }
+
+        }
+
+        #endregion
 
     }
 
 
 
 
-    
-}
 
+}
