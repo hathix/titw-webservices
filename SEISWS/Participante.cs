@@ -15,6 +15,24 @@ namespace SEISWS
         public string DocumentoIdentidad { get; set; }
         public string FechaNacimiento { get; set; }
         public int Sexo { get; set; }
+      
+
+
+        public Participante(string codPac , string nombres,string apellidoP,string apellidoM,string documentoId,string fechaN,int sexo) {
+
+            this.CodigoPaciente = codPac;
+            this.Nombres = nombres;
+            this.ApellidoPaterno = apellidoP;
+            this.ApellidoMaterno = apellidoM;
+            this.DocumentoIdentidad = documentoId;
+            this.FechaNacimiento = fechaN;
+            this.Sexo = sexo;
+   
+        
+
+
+        
+        }
 
         public Participante()
         {

@@ -34,6 +34,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="SecuGen.FDxSDKPro.Windows">
+      <HintPath>C:\Program Files (x86)\SecuGen\FDx SDK Pro for Windows\DotNET\Bin\x64\SecuGen.FDxSDKPro.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -63,19 +66,32 @@
     <Content Include="WSParticipante.asmx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analito.cs" />
+    <Compile Include="Area.cs" />
+    <Compile Include="CabeceraSA.cs" />
     <Compile Include="Departamento.cs" />
+    <Compile Include="Distrito.cs" />
+    <Compile Include="ExamenSA.cs" />
     <Compile Include="Geofence.cs" />
+    <Compile Include="GrupoVisita.cs" />
     <Compile Include="lstId.cs" />
     <Compile Include="Idreg.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="Muestra.cs" />
+    <Compile Include="OpcionAnalito.cs" />
+    <Compile Include="PacienteSA.cs" />
+    <Compile Include="Provincia.cs" />
+    <Compile Include="Visita.cs" />
     <Compile Include="Visitas1.cs" />
     <Compile Include="Login.cs" />
-    <Compile Include="Visita.cs" />
     <Compile Include="Conexion.cs" />
     <Compile Include="Proyecto.cs" />
     <Compile Include="Local.cs" />
     <Compile Include="Participante.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Visitas.cs" />
+    <Compile Include="Visitas2.cs" />
+    <Compile Include="VisitaSA.cs" />
     <Compile Include="WSParticipante.asmx.cs">
       <DependentUpon>WSParticipante.asmx</DependentUpon>
       <SubType>Component</SubType>

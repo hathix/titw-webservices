@@ -14,6 +14,10 @@ namespace SEISWS
         public string DescripcionVisita { get; set; }
         public Boolean GenerarAuto { get; set; }
         public int Dependiente { get; set; }
+        public int DiasVisitaProx { get; set; }
+        public int DiasAntes { get; set; }
+        public int DiasDespues { get; set; }
+        public int OrdenVisita { get; set; }
 
 
         public Visita()
@@ -25,6 +29,10 @@ namespace SEISWS
             this.DescripcionVisita = "";
             this.GenerarAuto = false;
             this.Dependiente = 0;
+            this.DiasVisitaProx = 0;
+            this.DiasAntes = 0;
+            this.DiasDespues = 0;
+            this.OrdenVisita = 0;
         }
 
         public Visita(int CodigoProyecto,
@@ -33,7 +41,8 @@ namespace SEISWS
             int CodigoVisita,
             string DescripcionVisita,
             Boolean GenerarAuto,
-            int Dependiente)
+            int Dependiente
+            )
         {
             this.CodigoProyecto = CodigoProyecto;
             this.CodigoGrupoVisita = CodigoGrupoVisita;
@@ -42,6 +51,37 @@ namespace SEISWS
             this.DescripcionVisita = DescripcionVisita;
             this.GenerarAuto = GenerarAuto ;
             this.Dependiente = Dependiente;
+            this.DiasVisitaProx = 0;
+            this.DiasAntes = 0;
+            this.DiasDespues = 0;
+            this.OrdenVisita = 0;
+
+        }
+
+        public Visita(int CodigoProyecto,
+            int CodigoGrupoVisita,
+            string NombreGrupoVisita,
+            int CodigoVisita,
+            string DescripcionVisita,
+            Boolean GenerarAuto,
+            int Dependiente,
+            int DiasVisitaProx,
+            int DiasAntes,
+            int DiasDespues,
+            int OrdenVisita
+            )
+        {
+            this.CodigoProyecto = CodigoProyecto;
+            this.CodigoGrupoVisita = CodigoGrupoVisita;
+            this.NombreGrupoVisita = NombreGrupoVisita;
+            this.CodigoVisita = CodigoVisita ;
+            this.DescripcionVisita = DescripcionVisita;
+            this.GenerarAuto = GenerarAuto ;
+            this.Dependiente = Dependiente;
+            this.DiasVisitaProx = DiasVisitaProx;
+            this.DiasAntes = DiasAntes;
+            this.DiasDespues = DiasDespues;
+            this.OrdenVisita = OrdenVisita;
 
         }
     }
