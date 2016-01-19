@@ -2299,14 +2299,12 @@ namespace SEISWS
             string sql;
             SqlConnection cn = con.conexion();
             cn.Open();
-         
 
             sql = "SELECT CodigoProyecto, CodigoGrupoVisita, Nombre, CodigoVisita, " +
             "Descripcion, Auto, DiasVisitaProx, DiasAntes, DiasDespues, " +
             "OrdenVisita FROM Visita WHERE CodigoProyecto=" + CodigoProyecto;
             SqlCommand cmd = new SqlCommand(sql,cn);
 
-            SqlDataAdapter dap = new SqlDataAdapter(sql, cn);
             SqlDataReader reader = cmd.ExecuteReader();
 
             List<Visita> lista = new List<Visita>();
@@ -2324,7 +2322,7 @@ namespace SEISWS
                     reader.GetInt32(6),
                     reader.GetInt32(7),
                     reader.GetInt32(8),
-                     reader.GetInt32(9)));
+                    reader.GetInt32(9)));
             }
 
             cn.Close();
@@ -2342,7 +2340,7 @@ namespace SEISWS
                  "SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103) AS FechaVisita," +
                  "CONVERT(varchar(5), V.HoraInicio, 108) AS HoraCita, EC.Descripcion AS EstadoVisita ,CONVERT(varchar(5), V.CodigoProyecto, 103) AS CodigoProyecto," +
                  "CONVERT(varchar(5), V.CodigoGrupoVisita, 103) AS CodigoGrupoVisita,CONVERT(varchar(5), V.CodigoVisita, 103) AS CodigoVisita, CONVERT(varchar(5), " +
-                 "V.CodigoVisitas, 103) AS CodigoVisitas, CASE WHEN FechaUpdEstado IS NULL THEN '' ELSE CONVERT(varchar(23), FechaUpdEstado, 120) as FechaUpdEstado " +
+                 "V.CodigoVisitas, 103) AS CodigoVisitas, CASE WHEN FechaUpdEstado IS NULL THEN '' ELSE CONVERT(varchar(23), FechaUpdEstado, 120) END AS FechaUpdEstado " +
                  "FROM  VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1 " +
                  "INNER JOIN USUARIOS_PROYECTO AS UP ON UP.CodigoProyecto = V.CodigoProyecto " +
                  "INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita " +
