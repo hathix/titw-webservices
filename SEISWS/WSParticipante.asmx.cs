@@ -2223,27 +2223,42 @@ namespace SEISWS
                 string fingerprintStr;
                 byte[] fingerprintTemplate;
                 bool matched = false;
+                bool error_triggered = false;
                 Int32 err;
 
 
                 while (reader.Read())
                 {
                     fingerprintStr = reader.GetString(1);
-                    fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+                    try{
+                        fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
 
-                    SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
-                    err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
-
-                    if (matched)
-                    {
-                        cn.Close();
-                        return reader.GetString(0);
-                        // return CodigoPaciente for hits
+                        SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
+                        err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
+                        if (err == (Int32)SGFPMError.ERROR_NONE){
+                            if (matched)
+                            {
+                                cn.Close();
+                                return reader.GetString(0);
+                                // return CodigoPaciente for hits
+                            }
+                        }
+                        else {
+                            return "SecugenError: " + err.ToString();
+                        }
+                    catch (Exception e) {
+                        error_triggered = true;
                     }
 
                 }
                 cn.Close();
-                return "fingerprintNotFound";
+                if (error_triggered){
+                    return "someMatchDidntWork"
+                }
+                else{
+                    return "fingerprintNotFound";
+                }
+                
 
             }
             catch (Exception e)
