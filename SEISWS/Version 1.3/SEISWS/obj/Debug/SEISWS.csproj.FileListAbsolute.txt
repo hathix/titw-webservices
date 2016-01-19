@@ -1,0 +1,13 @@
+C:\Users\IBM\Documents\Visual Studio 2010\Projects\SEISWS\SEISWS\bin\SEISWS.dll
+C:\Users\IBM\Documents\Visual Studio 2010\Projects\SEISWS\SEISWS\bin\SEISWS.pdb
+C:\Users\IBM\Documents\Visual Studio 2010\Projects\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+C:\Users\IBM\Documents\Visual Studio 2010\Projects\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
+C:\Users\User\documents\visual studio 2010\Projects\SEISWS\SEISWS\bin\SEISWS.dll
+C:\Users\User\documents\visual studio 2010\Projects\SEISWS\SEISWS\bin\SEISWS.pdb
+C:\Users\User\documents\visual studio 2010\Projects\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+C:\Users\User\documents\visual studio 2010\Projects\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
+E:\FUENTES\web services  app android\SEISWS\SEISWS 2015-09-25\SEISWS\SEISWS\bin\SEISWS.dll
+E:\FUENTES\web services  app android\SEISWS\SEISWS 2015-09-25\SEISWS\SEISWS\bin\SEISWS.pdb
+E:\FUENTES\web services  app android\SEISWS\SEISWS 2015-09-25\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+E:\FUENTES\web services  app android\SEISWS\SEISWS 2015-09-25\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
+E:\FUENTES\web services  app android\SEISWS\SEISWS 2015-09-25\SEISWS\SEISWS\obj\Debug\SEISWS.csprojResolveAssemblyReference.cache
