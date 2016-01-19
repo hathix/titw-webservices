@@ -2187,9 +2187,11 @@ namespace SEISWS
         [WebMethod]
         public string BuscarHuella(string Huella)
         {
-            byte[] huellaTemplate;
+               byte[] huellaTemplate;
             
             SGFingerPrintManager m_FPM;
+            Int32 err;
+            
 
             try
             {
@@ -2205,6 +2207,12 @@ namespace SEISWS
             {
                 // load in the fingerprint tools
                 m_FPM = new SGFingerPrintManager();
+                 err = m_FPM.InitEx(300, 400, 500);
+
+                if (err != (Int32)SGFPMError.ERROR_NONE)
+                {
+                    return "Secugen Load Error " + err.ToString();
+                }
             }
             catch (Exception e)
             {
@@ -2224,7 +2232,7 @@ namespace SEISWS
                 byte[] fingerprintTemplate;
                 bool matched = false;
                 bool error_triggered = false;
-                Int32 err;
+               
 
 
                 while (reader.Read())
@@ -2238,14 +2246,17 @@ namespace SEISWS
                         if (err == (Int32)SGFPMError.ERROR_NONE){
                             if (matched)
                             {
-                                cn.Close();
-                                return reader.GetString(0);
+                                
+                                string  usuario =  reader.GetString(0);
                                 // return CodigoPaciente for hits
+                                cn.Close();
+                                return usuario;
                             }
                         }
                         else {
                             return "SecugenError: " + err.ToString();
                         }
+                    }
                     catch (Exception e) {
                         error_triggered = true;
                     }
@@ -2253,7 +2264,7 @@ namespace SEISWS
                 }
                 cn.Close();
                 if (error_triggered){
-                    return "someMatchDidntWork"
+                    return "someMatchDidntWork";
                 }
                 else{
                     return "fingerprintNotFound";
@@ -2263,8 +2274,10 @@ namespace SEISWS
             }
             catch (Exception e)
             {
-                return "sqlConnectionOrMatchingFailed";
+                return e.Message; ;
             }
+
+           
 
         }
 
@@ -2299,12 +2312,12 @@ namespace SEISWS
             string sql;
             SqlConnection cn = con.conexion();
             cn.Open();
-         
+
 
             sql = "SELECT CodigoProyecto, CodigoGrupoVisita, Nombre, CodigoVisita, " +
             "Descripcion, Auto, DiasVisitaProx, DiasAntes, DiasDespues, " +
             "OrdenVisita FROM Visita WHERE CodigoProyecto=" + CodigoProyecto;
-            SqlCommand cmd = new SqlCommand(sql,cn);
+            SqlCommand cmd = new SqlCommand(sql, cn);
 
             SqlDataAdapter dap = new SqlDataAdapter(sql, cn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -2319,7 +2332,7 @@ namespace SEISWS
                     reader.GetString(2),
                     reader.GetInt32(3),
                     reader.GetString(4),
-                    reader.GetBoolean(5),
+                    Convert.ToBoolean(reader.GetInt32(5).ToString()),
                     0, // dependiente does not exist in database
                     reader.GetInt32(6),
                     reader.GetInt32(7),
@@ -2332,6 +2345,54 @@ namespace SEISWS
         }
 
 
+        [WebMethod]
+        public Participante[] ObtenerPacienteDeCodigoPaciente(string codigopaciente)
+        {
+
+            try
+            {
+                SqlConnection cn = con.conexion();
+
+                cn.Open();
+                string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
+                        "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) AS FechaNacimiento," +
+                        "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
+
+                SqlCommand cmd = new SqlCommand(sql, cn);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Participante> lista = new List<Participante>();
+
+                while (reader.Read())
+                {
+                    lista.Add(new Participante(
+                        reader.GetString(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4),
+                        reader.GetString(5),
+                        reader.GetString(6),
+                        reader.GetInt32(7)));
+                }
+
+                cn.Close();
+
+                return lista.ToArray();
+            }
+
+            catch (SqlException ex)
+            {
+                return null;
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
 
         [WebMethod]
         public Visitas2[] ListadoVisitas5(string CodigoPaciente, string CodigoUsuario, string CodigoProyecto)
@@ -2342,7 +2403,7 @@ namespace SEISWS
                  "SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103) AS FechaVisita," +
                  "CONVERT(varchar(5), V.HoraInicio, 108) AS HoraCita, EC.Descripcion AS EstadoVisita ,CONVERT(varchar(5), V.CodigoProyecto, 103) AS CodigoProyecto," +
                  "CONVERT(varchar(5), V.CodigoGrupoVisita, 103) AS CodigoGrupoVisita,CONVERT(varchar(5), V.CodigoVisita, 103) AS CodigoVisita, CONVERT(varchar(5), " +
-                 "V.CodigoVisitas, 103) AS CodigoVisitas, CASE WHEN FechaUpdEstado IS NULL THEN '' ELSE CONVERT(varchar(23), FechaUpdEstado, 120) as FechaUpdEstado " +
+                 "V.CodigoVisitas, 103) AS CodigoVisitas, CASE WHEN FechaUpdEstado IS NULL THEN '' ELSE CONVERT(varchar(23), FechaUpdEstado, 120)  END as FechaUpdEstado " +
                  "FROM  VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1 " +
                  "INNER JOIN USUARIOS_PROYECTO AS UP ON UP.CodigoProyecto = V.CodigoProyecto " +
                  "INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita " +

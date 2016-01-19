@@ -33,3 +33,8 @@ E:\Servicio Web - Edit\SEISWS\SEISWS\bin\SecuGen.FDxSDKPro.Windows.dll
 E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.csprojResolveAssemblyReference.cache
 E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.dll
 E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
+C:\Users\dvillanueva\Desktop\Back\SEISWS\SEISWS\SEISWS\bin\SEISWS.dll
+C:\Users\dvillanueva\Desktop\Back\SEISWS\SEISWS\SEISWS\bin\SEISWS.pdb
+C:\Users\dvillanueva\Desktop\Back\SEISWS\SEISWS\SEISWS\bin\SecuGen.FDxSDKPro.Windows.dll
+C:\Users\dvillanueva\Desktop\Back\SEISWS\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+C:\Users\dvillanueva\Desktop\Back\SEISWS\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
