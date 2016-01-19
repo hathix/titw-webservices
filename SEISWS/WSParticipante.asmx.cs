@@ -2372,6 +2372,52 @@ namespace SEISWS
             return lista.ToArray();
         }
 
+        [WebMethod]
+        public Participante[] ObtenerPacienteDeCodigoPaciente(string codigopaciente)
+        {
+
+            try {
+                SqlConnection cn = con.conexion();
+
+                cn.Open();
+                string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
+                        "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) AS FechaNacimiento," +
+                        "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
+
+                SqlCommand cmd = new SqlCommand(sql, cn);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Participante> lista = new List<Participante>();
+
+                while (reader.Read())
+                {
+                    lista.Add(new Participante(
+                        reader.GetString(0), 
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4),
+                        reader.GetString(5),
+                        reader.GetString(6),
+                        reader.GetInt32(7)));
+                }
+
+                cn.Close();
+
+                return lista.ToArray();
+            }
+
+            catch (SqlException ex) {
+                return null;
+            }
+
+            catch (Exception ex) {
+                return null;
+            }
+        
+        }
+
         #endregion 
 
     }
