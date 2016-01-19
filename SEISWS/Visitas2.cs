@@ -42,7 +42,7 @@ namespace SEISWS
             string CodigoGrupoVisita,
             string CodigoVisita,
             string CodigoVisitas,
-            string FechaUpdEstado;
+            string FechaUpdEstado
             )
         {
             this.Proyecto = Proyecto;

@@ -6,8 +6,6 @@ using System.Web.Services;
 using System.Data.SqlClient;
 using System.Data;
 using SecuGen.FDxSDKPro.Windows;
-using System.Text.RegularExpressions;
-
 namespace SEISWS
 {
 
@@ -105,52 +103,6 @@ namespace SEISWS
             cn.Close();
 
             return lista.ToArray();
-        }
-
-        [WebMethod]
-        public Participante[] ObtenerPacienteDeCodigoPaciente(string codigopaciente)
-        {
-
-            try {
-                SqlConnection cn = con.conexion();
-
-                cn.Open();
-                string sql = "select CONVERT(varchar(100), CodigoPaciente, 103) AS CodigoPaciente,Nombres,ApellidoPaterno,ApellidoMaterno," +
-                        "CodigoTipoDocumento,DocumentoIdentidad,convert(varchar(10),FechaNacimiento,103) AS FechaNacimiento," +
-                        "Sexo from PACIENTE WHERE CodigoPaciente = '" + codigopaciente + "'";
-
-                SqlCommand cmd = new SqlCommand(sql, cn);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                List<Participante> lista = new List<Participante>();
-
-                while (reader.Read())
-                {
-                    lista.Add(new Participante(
-                        reader.GetString(0), 
-                        reader.GetString(1),
-                        reader.GetString(2),
-                        reader.GetString(3),
-                        reader.GetInt32(4),
-                        reader.GetString(5),
-                        reader.GetString(6),
-                        reader.GetInt32(7)));
-                }
-
-                cn.Close();
-
-                return lista.ToArray();
-            }
-
-            catch (SqlException ex) {
-                return null;
-            }
-
-            catch (Exception ex) {
-                return null;
-            }
-        
         }
 
         [WebMethod]
@@ -517,7 +469,7 @@ namespace SEISWS
             }
 
             cn.Close();
- 
+
             return lista.ToArray();
         }
         [WebMethod]
@@ -2176,180 +2128,168 @@ namespace SEISWS
         
         }
 
-        #endregion 
 
-    }
 
-    // funcionalidad de huellas digitales
+        [WebMethod]
+        public int AgregarHuella(string CodigoPaciente, string Huella)
+        {
+            SqlConnection cn = con.conexion();
+            SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
+                    CodigoPaciente + "', '" + Huella + "')", cn);
+            SqlTransaction trx;
+            int intretorno;
 
-    // agregar informacion de huella para un paciente reconocido por codigo
-    [WebMethod]
-    public int AgregarHuella(string CodigoPaciente, string Huella)
-    {
-        SqlConnection cn = con.conexion();
-        SqlCommand cmd = new SqlCommand("INSERT INTO Huellas VALUES ('" +
-                CodigoPaciente + "', '" + Huella + "')", cn);
-        SqlTransaction trx;
-        int intretorno;
+            try
+            {
+                cn.Open();
+                trx = cn.BeginTransaction();
+                cmd.Transaction = trx;
+                intretorno = cmd.ExecuteNonQuery();
+                trx.Commit();
+                cn.Close();
+                return intretorno;
+            }
+            catch (SqlException sqlException)
+            {
+                cn.Close();
+                return -1;
+            }
+            catch (Exception exception)
+            {
+                cn.Close();
+                return -1;
+            }
+        }
 
-        try{
+        // checa si la informacion de un paciente ya ha sido insertada
+        [WebMethod]
+        public int PacienteTieneHuella(string CodigoPaciente)
+        {
+            SqlConnection cn = con.conexion();
             cn.Open();
-            trx = cn.BeginTransaction();
-            cmd.Transaction = trx;
-            intretorno = cmd.ExecuteNonQuery();
-            trx.Commit();
-            cn.Close();
-            return intretorno;
-        }
-        catch (SqlException sqlException)
-        {
-            cn.Close();
-            return -1;
-        }
-        catch (Exception exception)
-        {
-            cn.Close();
-            return -1;
-        }
-    }
+            int existe = 0;
+            string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
+                    CodigoPaciente + "'";
 
-    // checa si la informacion de un paciente ya ha sido insertada
-    [WebMethod]
-    public int PacienteTieneHuella (string CodigoPaciente)
-    {
-        SqlConnection cn = con.conexion();
-        cn.Open();
-        string existe = 0;
-        string sql = "SELECT Huella FROM Huellas WHERE CodigoPaciente = '" +
-                CodigoPaciente + "'";
+            SqlCommand cmd = new SqlCommand(sql, cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                existe = 1;
+            }
+            cn.Close();
+            return existe;
+        }
+
+        // procesa todas las huellas salvadas para ver si un coincide con 
+        // una huella de prueba.
+        [WebMethod]
+        public string BuscarHuella(string Huella)
+        {
+            byte[] huellaTemplate;
+            
+            SGFingerPrintManager m_FPM;
+
+            try
+            {
+                // process the given fingerprint into the correct template
+                huellaTemplate = Convert.FromBase64String(Huella);
+            }
+            catch (Exception e)
+            {
+                return "fingerprintNotConverted";
+            }
+
+            try
+            {
+                // load in the fingerprint tools
+                m_FPM = new SGFingerPrintManager();
+            }
+            catch (Exception e)
+            {
+                return "fingerprintManagerNotFound";
+            }
+
+            try
+            {
+                // prep the data retrieval of fingerprints
+                SqlConnection cn = con.conexion();
+                cn.Open();
+                string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
+                SqlCommand cmd = new SqlCommand(sql, cn);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                string fingerprintStr;
+                byte[] fingerprintTemplate;
+                bool matched = false;
+                Int32 err;
+
+
+                while (reader.Read())
+                {
+                    fingerprintStr = reader.GetString(1);
+                    fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+
+                    SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
+                    err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
+
+                    if (matched)
+                    {
+                        cn.Close();
+                        return reader.GetString(0);
+                        // return CodigoPaciente for hits
+                    }
+
+                }
+                cn.Close();
+                return "fingerprintNotFound";
+
+            }
+            catch (Exception e)
+            {
+                return "sqlConnectionOrMatchingFailed";
+            }
+
+        }
+
+
+        /* [WebMethod]
+   public int[] VentanaDeVisitas(string CodigoProyecto, string CodigoGrupoVisita, string CodigoVisita)
+   {
+       SqlConnection cn = con.conexion();
+       cn.Open();
+
+       sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" + 
+               CodigoProyecto + " AND CodigoGrupoVisita=" + CodigoGrupoVisita +
+               " AND CodigoVisita=" + CodigoVisita; 
 
         SqlCommand cmd = new SqlCommand(sql, cn);
         SqlDataReader reader = cmd.ExecuteReader();
 
-        if (reader.HasRows)
-        {
-            existe = 1;
+        if (reader.HasRows) {
+           reader.Read();
+           return [reader.GetInt32(0), reader.GetInt32(1)];
         }
-        cn.Close();
-        return existe;
-    }
+        else {
 
-    // procesa todas las huellas salvadas para ver si un coincide con 
-    // una huella de prueba.
-    [WebMethod]
-    public string BuscarHuella(string Huella)
-    {
-        string base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$"
-        Regex r = new Regex(pat, RegexOptions.IgnoreCase);
-        Match m;
-
-        byte[] huellaTemplate;
-        SGFingerPrintManager m_FPM;
-
-        try{
-            // process the given fingerprint into the correct template
-            huellaTemplate = Convert.FromBase64String(Huella);
-        }
-        catch (Exception e)
-        {
-            return "fingerprintNotConverted";
         }
 
-        try{
-            // load in the fingerprint tools
-            m_FPM = new SGFingerPrintManager();
-        }
-        catch (Exception e)
-        {
-            return "fingerprintManagerNotFound";
-        }
-
-        try{
-            // prep the data retrieval of fingerprints
-            SqlConnection cn = con.conexion();
-            cn.Open();
-            string sql = "SELECT CodigoPaciente, Huella FROM Huellas";
-            SqlCommand cmd = new SqlCommand(sql, cn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            string fingerprintStr;
-            byte[] fingerprintTemplate;
-            bool matched = false;
-            Int32 err;
-            
-
-            while (reader.Read())
-            {
-                try{
-                    fingerprintStr = reader.GetString(1);
-                    m = r.Match(text);
-                    if (m.Success)
-                    {
-                        fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
-
-                        SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
-                        err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
-
-                        if (matched)
-                        {
-                            cn.Close();
-                            return reader.GetString(0);
-                            // return CodigoPaciente for hits
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    // don't do anything, bad data shouldn't mess you up
-                }
-
-            }
-            cn.Close();
-            return "fingerprintNotFound";
-
-        }
-        catch (Exception e)
-        {
-            return "sqlConnectionOrMatchingFailed";
-        }
-
-    }
-
-
-    /* [WebMethod]
-    public int[] VentanaDeVisitas(string CodigoProyecto, string CodigoGrupoVisita, string CodigoVisita)
-    {
-        SqlConnection cn = con.conexion();
-        cn.Open();
-
-        sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" + 
-                CodigoProyecto + " AND CodigoGrupoVisita=" + CodigoGrupoVisita +
-                " AND CodigoVisita=" + CodigoVisita; 
-
-         SqlCommand cmd = new SqlCommand(sql, cn);
-         SqlDataReader reader = cmd.ExecuteReader();
-
-         if (reader.HasRows) {
-            reader.Read();
-            return [reader.GetInt32(0), reader.GetInt32(1)];
-         }
-         else {
-
-         }
-
-    } */
+   } */
 
 
         [WebMethod]
         public Visita[] ListadoGrupoVisita1(int CodigoProyecto)
         {
+            string sql;
             SqlConnection cn = con.conexion();
             cn.Open();
+         
 
-            sql = "SELECT CodigoProyecto, CodigoGrupoVisita, NombreGrupoVisita, CodigoVisita, " + 
+            sql = "SELECT CodigoProyecto, CodigoGrupoVisita, NombreGrupoVisita, CodigoVisita, " +
             "DescripcionVisita, GenerarAuto, Dependiente, DiasVisitaProx, DiasAntes, DiasDesputes, " +
             "OrdenVisita FROM Visita WHERE CodigoProyecto=" + CodigoProyecto;
-
+            SqlCommand cmd = new SqlCommand(sql,cn);
 
             SqlDataAdapter dap = new SqlDataAdapter(sql, cn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -2361,19 +2301,21 @@ namespace SEISWS
                 lista.Add(new Visita(
                     reader.GetInt32(0),
                     reader.GetInt32(1),
-                    reader.GetString(2), 
+                    reader.GetString(2),
                     reader.GetInt32(3),
                     reader.GetString(4),
                     reader.GetBoolean(5),
                     reader.GetInt32(6),
                     reader.GetInt32(7),
                     reader.GetInt32(8),
-                    reader.GetInt32(9)));
+                    reader.GetInt32(9),
+                     reader.GetInt32(10)));
             }
 
             cn.Close();
+            return lista.ToArray();
         }
-         
+
 
 
         [WebMethod]
@@ -2400,7 +2342,7 @@ namespace SEISWS
 
             while (reader.Read())
             {
-                lista.Add(new Visitas1(
+                lista.Add(new Visitas2(
                     reader.GetString(0),
                     reader.GetString(1),
                     reader.GetString(2),
@@ -2409,15 +2351,21 @@ namespace SEISWS
                     reader.GetString(5),
                     reader.GetString(6),
                     reader.GetString(7),
-                    reader.GetString(8)),
-                    reader.GetString(9));
+                    reader.GetString(8),
+                    reader.GetString(9)));
             }
 
             cn.Close();
             return lista.ToArray();
         }
 
+        #endregion 
+
+    }
 
 
+
+
+    
 }
 

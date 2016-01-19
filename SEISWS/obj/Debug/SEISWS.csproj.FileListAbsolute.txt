@@ -21,3 +21,15 @@ E:\FUENTES\web services  app android\SEISWS\2.3\2.3\SEISWS\SEISWS\bin\SEISWS.pdb
 E:\FUENTES\web services  app android\SEISWS\2.3\2.3\SEISWS\SEISWS\obj\Debug\SEISWS.dll
 E:\FUENTES\web services  app android\SEISWS\2.3\2.3\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
 E:\FUENTES\web services  app android\SEISWS\2.3\2.3\SEISWS\SEISWS\obj\Debug\SEISWS.csprojResolveAssemblyReference.cache
+E:\FUENTES\web services  app android\SEISWS\2.3\2.3\SEISWS\SEISWS\bin\SecuGen.FDxSDKPro.Windows.dll
+C:\Users\dvillanueva\Desktop\Nueva carpeta\SEISWS\SEISWS\SEISWS\bin\SEISWS.dll
+C:\Users\dvillanueva\Desktop\Nueva carpeta\SEISWS\SEISWS\SEISWS\bin\SEISWS.pdb
+C:\Users\dvillanueva\Desktop\Nueva carpeta\SEISWS\SEISWS\SEISWS\bin\SecuGen.FDxSDKPro.Windows.dll
+C:\Users\dvillanueva\Desktop\Nueva carpeta\SEISWS\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+C:\Users\dvillanueva\Desktop\Nueva carpeta\SEISWS\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
+E:\Servicio Web - Edit\SEISWS\SEISWS\bin\SEISWS.dll
+E:\Servicio Web - Edit\SEISWS\SEISWS\bin\SEISWS.pdb
+E:\Servicio Web - Edit\SEISWS\SEISWS\bin\SecuGen.FDxSDKPro.Windows.dll
+E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.csprojResolveAssemblyReference.cache
+E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.dll
+E:\Servicio Web - Edit\SEISWS\SEISWS\obj\Debug\SEISWS.pdb
