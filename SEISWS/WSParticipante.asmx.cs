@@ -2327,7 +2327,7 @@ namespace SEISWS
                  "SUBSTRING(DATENAME(dw, V.FechaVisita), 1, 3) + ' ' + CONVERT(varchar(10), V.FechaVisita, 103) AS FechaVisita," +
                  "CONVERT(varchar(5), V.HoraInicio, 108) AS HoraCita, EC.Descripcion AS EstadoVisita ,CONVERT(varchar(5), V.CodigoProyecto, 103) AS CodigoProyecto," +
                  "CONVERT(varchar(5), V.CodigoGrupoVisita, 103) AS CodigoGrupoVisita,CONVERT(varchar(5), V.CodigoVisita, 103) AS CodigoVisita, CONVERT(varchar(5), " +
-                 "V.CodigoVisitas, 103) AS CodigoVisitas, FechaUpdEstado " +
+                 "V.CodigoVisitas, 103) AS CodigoVisitas, CONVERT(varchar(23), FechaUpdEstado, 121) as FechaUpdEstado " +
                  "FROM  VISITAS AS V INNER JOIN PROYECTO AS PY ON V.CodigoProyecto = PY.CodigoProyecto AND V.Estado = 1 " +
                  "INNER JOIN USUARIOS_PROYECTO AS UP ON UP.CodigoProyecto = V.CodigoProyecto " +
                  "INNER JOIN VISITA AS E ON V.CodigoProyecto = E.CodigoProyecto AND V.CodigoGrupoVisita = E.CodigoGrupoVisita AND V.CodigoVisita = E.CodigoVisita " +
