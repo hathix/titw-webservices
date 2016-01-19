@@ -34,8 +34,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="SecuGen.FDxSDKPro.Windows">
-      <HintPath>C:\Program Files (x86)\SecuGen\FDx SDK Pro for Windows\DotNET\Bin\x64\SecuGen.FDxSDKPro.Windows.dll</HintPath>
+    <Reference Include="SecuGen.FDxSDKPro.Windows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4c4e1bcde5201535, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\SecuGen\FDx SDK Pro for Windows\DotNET\Bin\x64\SecuGen.FDxSDKPro.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
