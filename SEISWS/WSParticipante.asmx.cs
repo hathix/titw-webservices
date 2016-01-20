@@ -2274,7 +2274,7 @@ namespace SEISWS
             }
             catch (Exception e)
             {
-                return e.Message; ;
+                return e.Message;
             }
 
 
@@ -2362,7 +2362,7 @@ namespace SEISWS
 
 
                 string sql = "SELECT Huellas.CodigoPaciente, Huellas.Huella FROM Huellas INNER JOIN Paciente " + 
-                                "ON Huellas.CodigoPaciente = Paciente.CodigoPaciente " + 
+                                "ON Huellas.CodigoPaciente = convert(varchar(36), Paciente.CodigoPaciente) " + 
                                 where_clause;
                 SqlCommand cmd = new SqlCommand(sql, cn);
                 SqlDataReader reader = cmd.ExecuteReader();
