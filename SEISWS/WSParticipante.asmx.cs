@@ -2331,7 +2331,7 @@ namespace SEISWS
                     reader.GetString(2),
                     reader.GetInt32(3),
                     reader.GetString(4),
-                    Convert.ToBoolean(reader.GetInt32(5).ToString()),
+                    Convert.ToBoolean(reader.GetInt32(5)),
                     0, // dependiente does not exist in database
                     reader.GetInt32(6),
                     reader.GetInt32(7),
