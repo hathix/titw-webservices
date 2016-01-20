@@ -2285,7 +2285,7 @@ namespace SEISWS
                // procesa todas las huellas salvadas para ver si un coincide con
         // una huella de prueba.
         [WebMethod]
-        public string BuscarHuellaFiltrado(string Huella, string nombres, string apellidop, string apellidom, string dob)
+        public string BuscarHuellaFiltrado(string Huella, string nombres, string apellidop, string apellidom)
         {
                byte[] huellaTemplate;
 
@@ -2331,12 +2331,12 @@ namespace SEISWS
                 {
                     if (first_done)
                     {
-                        where_clause += " AND Paciente.Nombres = '" + nombre.ToUpper().Trim() + "'";
+                        where_clause += " AND Paciente.Nombres = '" + nombres.ToUpper().Trim() + "'";
                     }
                     else
                     {
                         first_done = true;
-                        where_clause += " Paciente.Nombres = '" + nombre.ToUpper().Trim() + "'";
+                        where_clause += " Paciente.Nombres = '" + nombres.ToUpper().Trim() + "'";
                     }
                 }
                 if (apellidom != "")
@@ -2357,16 +2357,6 @@ namespace SEISWS
                     else{
                         first_done = true;
                         where_clause += " Paciente.ApellidoPaterno = '" + apellidop.ToUpper().Trim() + "'";
-                    }
-                }
-                if (dob != "")
-                {
-                    if (first_done){
-                        where_clause += " AND Paciente.FechaNacimiento = '" + dob.Trim() + "'";
-                    }
-                    else{
-                        first_done = true;
-                        where_clause += " Paciente.FechaNacimiento = '" + dob.Trim() + "'";
                     }
                 }
 
