@@ -2282,28 +2282,153 @@ namespace SEISWS
         }
 
 
-        /* [WebMethod]
-   public int[] VentanaDeVisitas(string CodigoProyecto, string CodigoGrupoVisita, string CodigoVisita)
-   {
-       SqlConnection cn = con.conexion();
-       cn.Open();
+               // procesa todas las huellas salvadas para ver si un coincide con
+        // una huella de prueba.
+        [WebMethod]
+        public string BuscarHuellaFiltrado(string Huella, string nombres, string apellidop, string apellidom, string dob)
+        {
+               byte[] huellaTemplate;
 
-       sql = "SELECT DiasAntes, DiasDespues FROM Visita WHERE CodigoProyecto=" +
-               CodigoProyecto + " AND CodigoGrupoVisita=" + CodigoGrupoVisita +
-               " AND CodigoVisita=" + CodigoVisita;
+            SGFingerPrintManager m_FPM;
+            Int32 err;
 
-        SqlCommand cmd = new SqlCommand(sql, cn);
-        SqlDataReader reader = cmd.ExecuteReader();
 
-        if (reader.HasRows) {
-           reader.Read();
-           return [reader.GetInt32(0), reader.GetInt32(1)];
+            try
+            {
+                // process the given fingerprint into the correct template
+                huellaTemplate = Convert.FromBase64String(Huella);
+            }
+            catch (Exception e)
+            {
+                return "fingerprintNotConverted";
+            }
+
+            try
+            {
+                // load in the fingerprint tools
+                m_FPM = new SGFingerPrintManager();
+                 err = m_FPM.InitEx(300, 400, 500);
+
+                if (err != (Int32)SGFPMError.ERROR_NONE)
+                {
+                    return "Secugen Load Error " + err.ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                return "fingerprintManagerNotFound";
+            }
+
+            try
+            {
+                // prep the data retrieval of fingerprints
+                SqlConnection cn = con.conexion();
+                cn.Open();
+
+                string where_clause = "WHERE";
+                boolean first_done = false;
+                if (nombres != "")
+                {
+                    if (first_done)
+                    {
+                        where_clause += " AND Paciente.Nombres = '" + nombre.ToUpper().Trim() + "'";
+                    }
+                    else
+                    {
+                        first_done = true;
+                        where_clause += " Paciente.Nombres = '" + nombre.ToUpper().Trim() + "'";
+                    }
+                }
+                if (apellidom != "")
+                {
+                    if (first_done){
+                        where_clause += " AND Paciente.ApellidoMaterno = '" + apellidom.ToUpper().Trim() + "'";
+                    }
+                    else{
+                        first_done = true;
+                        where_clause += " Paciente.ApellidoMaterno = '" + apellidom.ToUpper().Trim() + "'";
+                    }
+                }
+                if (apellidop != "")
+                {
+                    if (first_done){
+                        where_clause += " AND Paciente.ApellidoPaterno = '" + apellidop.ToUpper().Trim() + "'";
+                    }
+                    else{
+                        first_done = true;
+                        where_clause += " Paciente.ApellidoPaterno = '" + apellidop.ToUpper().Trim() + "'";
+                    }
+                }
+                if (dob != "")
+                {
+                    if (first_done){
+                        where_clause += " AND Paciente.FechaNacimiento = '" + dob.Trim() + "'";
+                    }
+                    else{
+                        first_done = true;
+                        where_clause += " Paciente.FechaNacimiento = '" + dob.Trim() + "'";
+                    }
+                }
+
+
+                string sql = "SELECT Huellas.CodigoPaciente, Huellas.Huella FROM Huellas INNER JOIN Paciente " + 
+                                "ON Huellas.CodigoPaciente = Paciente.CodigoPaciente " + 
+                                where_clause;
+                SqlCommand cmd = new SqlCommand(sql, cn);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                string fingerprintStr;
+                byte[] fingerprintTemplate;
+                bool matched = false;
+                bool error_triggered = false;
+
+
+
+                while (reader.Read())
+                {
+                    fingerprintStr = reader.GetString(1);
+                    try{
+                        fingerprintTemplate = Convert.FromBase64String(fingerprintStr);
+
+                        SGFPMSecurityLevel secu_level = SGFPMSecurityLevel.NORMAL;
+                        err = m_FPM.MatchTemplate(huellaTemplate, fingerprintTemplate, secu_level, ref matched);
+                        if (err == (Int32)SGFPMError.ERROR_NONE){
+                            if (matched)
+                            {
+
+                                string  usuario =  reader.GetString(0);
+                                // return CodigoPaciente for hits
+                                cn.Close();
+                                return usuario;
+                            }
+                        }
+                        else {
+                            return "SecugenError: " + err.ToString();
+                        }
+                    }
+                    catch (Exception e) {
+                        error_triggered = true;
+                    }
+
+                }
+                cn.Close();
+                if (error_triggered){
+                    return "someMatchDidntWork";
+                }
+                else{
+                    return "fingerprintNotFound";
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return e.Message; ;
+            }
+
+
+
         }
-        else {
-
-        }
-
-   } */
 
 
         [WebMethod]
